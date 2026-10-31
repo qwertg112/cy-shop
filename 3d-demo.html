@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CY68 黑红波浪纹 · 3D 模型演示</title>
+<style>
+  :root{
+    --bg:#07080c; --panel:#0d0f15; --line:rgba(255,255,255,.10); --ink:#f4f5fa;
+    --muted:#8f96a9; --red:#ff3557; --violet:#8f1cff;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:
+    radial-gradient(70% 60% at 50% 0%,rgba(255,53,87,.10),transparent 65%),
+    radial-gradient(50% 50% at 85% 80%,rgba(95,75,255,.08),transparent 68%),
+    var(--bg);
+    color:var(--ink);font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;overflow:hidden}
+  .app{height:100%;display:flex;flex-direction:column}
+  header{display:flex;align-items:center;gap:16px;padding:18px 26px;border-bottom:1px solid var(--line);
+    background:rgba(7,8,12,.62);backdrop-filter:blur(12px);z-index:10}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.12em;font-size:13px}
+  .brand .glyph{width:30px;height:30px;border-radius:10px;background:
+    linear-gradient(135deg,var(--red),#7d1cff);display:grid;place-items:center;font-size:15px;
+    box-shadow:0 6px 20px rgba(255,53,87,.28)}
+  .brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:.22em;font-weight:600;margin-top:1px}
+  .spacer{flex:1}
+  .top-link{color:#aeb5c7;text-decoration:none;font-size:12px;border:1px solid var(--line);
+    padding:8px 14px;border-radius:999px;transition:.2s}
+  .top-link:hover{color:#fff;border-color:rgba(255,255,255,.34)}
+  main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 330px}
+  .stage-wrap{position:relative;min-width:0;min-height:0;
+    background:
+      radial-gradient(58% 58% at 50% 40%,rgba(255,53,87,.09),transparent 72%),
+      radial-gradient(45% 55% at 80% 85%,rgba(70,100,255,.06),transparent 70%);
+    overflow:hidden}
+  #viewer{position:absolute;inset:0}
+  .loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:12px;letter-spacing:.08em;z-index:8}
+  .loading .spin{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.12);
+    border-top-color:var(--red);animation:spin .9s linear infinite;margin:0 auto 12px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .stage-note{position:absolute;left:20px;bottom:18px;color:#747c90;font-size:11px;letter-spacing:.04em;z-index:6;pointer-events:none}
+  .stage-note b{color:#c8ceda;font-weight:600}
+  aside{border-left:1px solid var(--line);background:linear-gradient(180deg,rgba(15,17,24,.9),rgba(8,9,13,.96));
+    padding:28px 26px;overflow:auto}
+  .eyebrow{color:var(--red);font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase}
+  h1{font-size:34px;line-height:1;margin:12px 0 6px;letter-spacing:-.02em}
+  h1 em{font-style:normal;background:linear-gradient(110deg,#ff5b77,#ff2f4f 45%,#b44bff);-webkit-background-clip:text;
+    background-clip:text;color:transparent}
+  .sub{color:var(--muted);font-size:12px;line-height:1.7;margin:0 0 20px}
+  .specs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);
+    border-radius:14px;overflow:hidden;margin:18px 0}
+  .specs div{background:#0b0d13;padding:12px 13px}
+  .specs span{display:block;color:#71798c;font-size:9.5px;letter-spacing:.08em;margin-bottom:4px}
+  .specs b{font-size:12px;font-weight:600;color:#dfe3ed}
+  .section-label{font-size:10px;color:#737b8f;letter-spacing:.18em;margin:22px 0 9px}
+  .views{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .views button,.action{border:1px solid var(--line);background:rgba(255,255,255,.03);color:#b7bfd0;
+    font:inherit;font-size:11px;border-radius:10px;padding:9px 8px;cursor:pointer;transition:.18s}
+  .views button:hover,.action:hover{color:#fff;border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.08)}
+  .views button.on{color:#fff;border-color:rgba(255,53,87,.6);background:linear-gradient(135deg,rgba(255,53,87,.28),rgba(143,28,255,.18))}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+  .action.wide{grid-column:1/-1}
+  .action.primary{background:linear-gradient(135deg,#ff3557,#8f1cff);border-color:transparent;color:#fff;font-weight:700}
+  .action.primary:hover{filter:brightness(1.08)}
+  .note{color:#666e80;font-size:10px;line-height:1.8;margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
+  .note b{color:#aeb5c5}
+  @media (max-width:900px){
+    main{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
+    aside{border-left:0;border-top:1px solid var(--line);padding:18px 18px 20px;max-height:42vh}
+    h1{font-size:26px}
+    .specs{margin:12px 0}
+    .sub{margin-bottom:12px}
+    .note{display:none}
+    header{padding:12px 14px}
+    .top-link{padding:6px 10px;font-size:11px}
+    .stage-note{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><div class="glyph">CY</div><div>CY次元<small>ANIME GEAR LAB</small></div></div>
+    <div class="spacer"></div>
+    <a class="top-link" href="index.html#/detail/2">← 返回商品详情</a>
+  </header>
+  <main>
+    <div class="stage-wrap" id="stageWrap">
+      <div id="viewer"></div>
+      <div class="loading" id="loading"><div><div class="spin"></div>正在构建 3D 模型…</div></div>
+      <div class="stage-note"><b>拖动旋转</b> · 滚轮缩放 · 双击复位 · 支持触屏</div>
+    </div>
+    <aside>
+      <div class="eyebrow">CY68 · 65% CUSTOM</div>
+      <h1><em>黑红</em>波浪纹</h1>
+      <p class="sub">65% 紧凑配列 · 68 键 · PBT 双色注塑热升华键帽<br>实时 WebGL 模型，可 360° 自由旋转观察。</p>
+      <div class="specs">
+        <div><span>LAYOUT</span><b>65% / 68 键</b></div>
+        <div><span>KEYCAP</span><b>PBT 双色</b></div>
+        <div><span>CASE</span><b>铝合金</b></div>
+        <div><span>CONNECT</span><b>Type-C 有线</b></div>
+      </div>
+      <div class="section-label">预设视角</div>
+      <div class="views">
+        <button data-view="hero" class="on">45°</button>
+        <button data-view="front">正面</button>
+        <button data-view="side">侧面</button>
+        <button data-view="top">俯视</button>
+        <button data-view="bottom">底部</button>
+        <button data-view="low">低角度</button>
+      </div>
+      <div class="section-label">操作</div>
+      <div class="actions">
+        <button class="action" id="autoBtn">暂停旋转</button>
+        <button class="action" id="resetBtn">重置视角</button>
+        <button class="action wide" id="variantBtn">切换外观：黑红波浪 / RGB 黑</button>
+        <button class="action wide" id="fullBtn">全屏查看</button>
+        <a class="action primary wide" style="text-align:center;text-decoration:none;line-height:1.35" href="index.html#/detail/2">在商品详情中打开</a>
+      </div>
+      <div class="note"><b>模型说明</b><br>68 颗键帽均为独立 sculpted 几何，每颗键帽拥有独立生成的 PBT 波浪纹贴图；外壳包含定位板、轴体、卫星轴、脚垫、螺丝与 Type-C 接口。WebGL 实时渲染，无外部模型文件依赖。</div>
+    </aside>
+  </main>
+</div>
+<script src="assets/keyboard3d.js"></script>
+<script>
+(function(){
+  var viewer = null;
+  var loading = document.getElementById('loading');
+  var params = new URLSearchParams(location.search);
+  var variant = params.get('variant') === 'rgb' ? 'rgb' : 'blackred';
+  if (variant === 'rgb') {
+    document.title = 'CY68 RGB 幻彩 · 3D 模型演示';
+    document.querySelector('h1').innerHTML = '<em>RGB</em>幻彩';
+    document.querySelector('.sub').innerHTML = '65% 紧凑配列 · 68 键 · 黑色键帽 + 白色字符<br>逐键 RGB 背光 / 外壳灯带 / 桌面彩色溢光';
+    document.querySelector('.eyebrow').textContent = 'CY68 · RGB BLACK';
+    document.querySelector('.note').innerHTML = '<b>模型说明</b><br>68 颗低矮圆润的黑色键帽，每颗带独立白色字符（数字行含上档符号、方向键为箭头、空格键为短横线）；键帽下方为逐键 RGB 灯板，外壳上下沿带 RGB 灯带，桌面有彩色溢光。与黑红波浪纹款是两套不同模型。';
+    var buyLink = document.querySelector('a.action.primary');
+    if (buyLink) buyLink.setAttribute('href', 'index.html#/detail/1');
+  }
+  window.CY_KEYBOARD3D.mount(document.getElementById('viewer'), {
+    variant: variant,
+    autoRotate: params.get('still') !== '1',
+    hud: true
+  }).then(function(v){
+    viewer = v;
+    loading.style.display = 'none';
+    var view = params.get('view');
+    if (view) {
+      v.setView(view);
+      document.querySelectorAll('[data-view]').forEach(function(b){
+        b.classList.toggle('on', b.getAttribute('data-view') === view);
+      });
+    }
+    if (params.get('still') === '1') {
+      v.setAutoRotate(false);
+      v.state.autoPaused = true;
+    }
+    if (params.get('zoom')) v.state.targetZoom = parseFloat(params.get('zoom')) || 1;
+    if (params.get('yaw')) { v.state.targetYaw = parseFloat(params.get('yaw')); v.state.yaw = v.state.targetYaw; }
+    if (params.get('pitch')) { v.state.targetPitch = parseFloat(params.get('pitch')); v.state.pitch = v.state.targetPitch; }
+    if (params.get('instant') === '1') v.snap();
+  }).catch(function(err){
+    loading.innerHTML = '<div style="color:#ff6b83">3D 加载失败<br><small>'+err.message+'</small></div>';
+  });
+
+  document.querySelectorAll('[data-view]').forEach(function(b){
+    b.addEventListener('click', function(){
+      if (!viewer) return;
+      document.querySelectorAll('[data-view]').forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on');
+      viewer.setView(b.getAttribute('data-view'));
+      viewer.setAutoRotate(false);
+      document.getElementById('autoBtn').textContent = '继续旋转';
+    });
+  });
+  var autoBtn = document.getElementById('autoBtn');
+  autoBtn.addEventListener('click', function(){
+    if (!viewer) return;
+    var on = viewer.toggleAutoRotate();
+    autoBtn.textContent = on ? '暂停旋转' : '继续旋转';
+  });
+  document.getElementById('resetBtn').addEventListener('click', function(){ if(viewer) viewer.reset(); });
+  document.getElementById('variantBtn').addEventListener('click', function(){
+    var url = new URL(location.href);
+    url.searchParams.set('variant', variant === 'rgb' ? 'blackred' : 'rgb');
+    url.searchParams.set('still', '1');
+    location.href = url.toString();
+  });
+  document.getElementById('fullBtn').addEventListener('click', function(){
+    var el = document.getElementById('stageWrap');
+    if (!document.fullscreenElement) { if (el.requestFullscreen) el.requestFullscreen(); }
+    else if (document.exitFullscreen) document.exitFullscreen();
+  });
+})();
+</script>
+</body>
+</html>
