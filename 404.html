@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>正在跳转 · CY次元</title>
+<script>
+(function(){
+  var base = '/cy-shop';
+  var p = location.pathname;
+  if (p.indexOf(base) === 0) {
+    var rest = p.slice(base.length);
+    if (rest && rest !== '/' && rest !== '') {
+      location.replace(base + '/#' + rest.replace(/^\//, ''));
+      return;
+    }
+  }
+  location.replace(base + '/');
+})();
+</script>
+</head>
+<body style="margin:0;background:#0A0D16;color:#CBD2E4;font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh">
+正在跳转到 CY次元商城…
+</body>
+</html>
