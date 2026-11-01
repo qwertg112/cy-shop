@@ -123,7 +123,7 @@ ul{list-style:none}
 .seckill-head .countdown em{font-style:normal;color:#8A8D93;align-self:center}
 .seckill-list{display:flex;gap:16px;flex:1;overflow-x:auto}
 .seckill-item{background:#24272B;border-radius:var(--r-sm);width:190px;flex-shrink:0;overflow:hidden;cursor:pointer}
-.seckill-item .ph{height:118px;overflow:hidden}
+.seckill-item .ph{aspect-ratio:1/1;overflow:hidden;background:var(--card2)}
 .seckill-item .ph img{width:100%;height:100%;object-fit:cover}
 .seckill-item .info{padding:10px 12px 12px}
 .seckill-item .nm{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2347,7 +2347,7 @@ function renderDetail(){
 function renderDetailTab(p,paramsHtml){
   const d=state.detail;
   if(d.tab==="detail"){
-    const im=(p.detailImgs||[]).map(s=>`<img src="${s}" alt="${p.name} 详情图" loading="lazy" style="width:100%;display:block;border-radius:12px;margin-bottom:14px">`).join("");
+    const im=(p.detailImgs||[]).map(s=>`<img src="${s}" alt="${p.name} 详情图" loading="lazy" style="width:100%;max-width:760px;display:block;border-radius:12px;margin:0 auto 14px">`).join("");
     return `<p style="line-height:1.9;color:var(--ink2)">${p.detail}</p>
     <p style="line-height:1.9;color:var(--ink2);margin-top:14px">包装清单：键盘本体 ×1、Type-C 数据线 ×1、说明书与保修卡 ×1、备用拔键器 ×1。支持 Windows 与 macOS 双系统。</p>
     <div style="margin-top:18px">${im}</div>`;
